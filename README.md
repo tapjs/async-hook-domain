@@ -88,6 +88,10 @@ Domain's still-active execution contexts are assigned to its parent.
 The `errorHandlerFunction` passed into the constructor.  Called when an
 uncaughtException or unhandledRejection occurs in the scope of the Domain.
 
+If this function throws, then the domain will be destroyed, and the thrown
+error will be raised.  If the domain doesn't have a parent, then this will
+likely crash the process entirely.
+
 ### d.destroyed Boolean
 
 Set to `true` if the domain is destroyed.
