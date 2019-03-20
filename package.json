@@ -1,6 +1,6 @@
 {
   "name": "async-hook-domain",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "An implementation of Domain-like error handling, built on async_hooks",
   "main": "index.js",
   "directories": {
@@ -43,5 +43,7 @@
   ],
   "author": "Isaac Z. Schlueter <i@izs.me> (https://blog.izs.me)",
   "license": "ISC",
-  "files": ["index.js"]
+  "files": [
+    "index.js"
+  ]
 }
