@@ -19,21 +19,6 @@ exports[`test/run.js TAP /Users/isaacs/dev/js/async-hook-domain/test/fixtures/ba
 
 `
 
-exports[`test/run.js TAP /Users/isaacs/dev/js/async-hook-domain/test/fixtures/destroy.js > error 1`] = `
-null
-`
-
-exports[`test/run.js TAP /Users/isaacs/dev/js/async-hook-domain/test/fixtures/destroy.js > output 1`] = `
-child 2 err
-child err
-c walk up to parent
-
-`
-
-exports[`test/run.js TAP /Users/isaacs/dev/js/async-hook-domain/test/fixtures/destroy.js > stderr 1`] = `
-
-`
-
 exports[`test/run.js TAP /Users/isaacs/dev/js/async-hook-domain/test/fixtures/no-handler.js > error 1`] = `
 Object {
   "code": 1,
@@ -68,6 +53,21 @@ parent: throw after destroy, go to parent
 `
 
 exports[`test/run.js TAP /Users/isaacs/dev/js/async-hook-domain/test/fixtures/child.js > stderr 1`] = `
+
+`
+
+exports[`test/run.js TAP /Users/isaacs/dev/js/async-hook-domain/test/fixtures/destroy.js > error 1`] = `
+null
+`
+
+exports[`test/run.js TAP /Users/isaacs/dev/js/async-hook-domain/test/fixtures/destroy.js > output 1`] = `
+child 2 err
+child err
+c walk up to parent
+
+`
+
+exports[`test/run.js TAP /Users/isaacs/dev/js/async-hook-domain/test/fixtures/destroy.js > stderr 1`] = `
 
 `
 
@@ -132,15 +132,15 @@ d caught 2
 `
 
 exports[`test/run.js TAP /Users/isaacs/dev/js/async-hook-domain/test/fixtures/promise-no-domain.js > stderr 1`] = `
-(node:57774) UnhandledPromiseRejectionWarning: no one to catch this
-(node:57774) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 1)
-(node:57774) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
-(node:57774) UnhandledPromiseRejectionWarning: sad
-(node:57774) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 4)
-(node:57774) UnhandledPromiseRejectionWarning: ok
-(node:57774) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 5)
-(node:57774) UnhandledPromiseRejectionWarning: happy
-(node:57774) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 6)
+(node:{PID}) UnhandledPromiseRejectionWarning: no one to catch this
+(node:{PID}) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 1)
+(node:{PID}) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+(node:{PID}) UnhandledPromiseRejectionWarning: sad
+(node:{PID}) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 4)
+(node:{PID}) UnhandledPromiseRejectionWarning: ok
+(node:{PID}) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 5)
+(node:{PID}) UnhandledPromiseRejectionWarning: happy
+(node:{PID}) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 6)
 
 `
 

@@ -8,6 +8,7 @@ const clean = o => o
   .replace(/(\n    at [^\n]*)+/g, '\n{STACK}')
   .split(process.cwd()).join('{CWD}')
   .replace(/\.js:[0-9]+(?::[0-9]+)?/g, '.js:#')
+  .replace(/\(node:\d+\)/g, '(node:{PID})')
 
 const runTest = file => t =>
   execFile(node, [file], (er, o, e) => {
