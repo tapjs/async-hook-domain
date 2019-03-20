@@ -1,6 +1,6 @@
 const Domain = require('../..')
 
-const d = new Domain(er => console.log('d', er))
+const d = new Domain((er, type) => console.log('d', er, type))
 
 new Promise((_, rej) =>
   setTimeout(() => rej('rejection')))

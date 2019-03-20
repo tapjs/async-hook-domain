@@ -3,6 +3,7 @@ const t = require('tap')
 const file = process.argv[2]
 const node = process.execPath
 const {execFile} = require('child_process')
+const {relative} = require('path')
 
 const clean = o => o
   .replace(/(\n    at [^\n]*)+/g, '\n{STACK}')
@@ -24,8 +25,9 @@ else {
   const fs = require('fs')
   const fixtures = fs.readdirSync(__dirname + '/fixtures')
     .filter(f => /\.js$/.test(f))
-    .map(f => __dirname + '/fixtures/' + f)
+    .map(f => relative(process.cwd(), __dirname + '/fixtures/' + f))
   t.plan(fixtures.length)
-  t.jobs = require('os').cpus().length
+  if (process.env.TAP_SNAPSHOT !== '1')
+    t.jobs = require('os').cpus().length
   fixtures.forEach(f => t.test(f, runTest(f)))
 }

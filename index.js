@@ -1,5 +1,13 @@
 const { executionAsyncId, createHook } = require('async_hooks')
 
+/* istanbul ignore next */
+const debug = process.env.ASYNC_HOOK_DOMAIN_DEBUG !== '1' ? () => {}
+: (() => {
+  const {writeSync} = require('fs')
+  const {format} = require('util')
+  return (...args) => writeSync(2, format(...args) + '\n')
+})()
+
 const sms = require('source-map-support')
 sms.install({environment:'node'})
 
@@ -15,6 +23,7 @@ let activePromise = null
 let domainHook = null
 const activateDomains = () => {
   if (!domainHook) {
+    debug('ACTIVATE')
     domainHook = createHook(hookMethods)
     domainHook.enable()
     process.on('uncaughtException', uncaughtException)
@@ -23,6 +32,7 @@ const activateDomains = () => {
 }
 const deactivateDomains = () => {
   if (domainHook) {
+    debug('DEACTIVATE')
     domainHook.disable()
     domainHook = null
     process.removeListener('uncaughtException', uncaughtException)
@@ -35,6 +45,7 @@ const hookMethods = {
   init (id, type, triggerId, resource) {
     const current = domains.get(triggerId)
     if (current) {
+      debug('INIT', id, type, resource, current)
       current.ids.add(id)
       domains.set(id, current)
     }
@@ -43,16 +54,19 @@ const hookMethods = {
   },
 
   promiseResolve (id) {
+    debug('PROMISE RESOLVE', id)
     promiseExecutionId = id
   },
 
   after (id) {
+    debug('AFTER', id)
     if (id === promiseExecutionId)
       promiseExecutionId = null
   },
 
   destroy (id) {
     const domain = domains.get(id)
+    debug('DESTROY', id, domain)
     if (!domain)
       return
     domains.delete(id)
@@ -64,11 +78,12 @@ const hookMethods = {
 
 // Promise rejection handler
 const unhandledRejection = er => {
+  debug('UNHANDLED REJECTION', er)
   const domain = domains.get(executionAsyncId())
     || domains.get(promiseExecutionId)
   if (domain) {
     try {
-      domain.onerror(er)
+      domain.onerror(er, 'unhandledRejection')
     } catch (e) {
       domain.destroy()
       uncaughtException(e)
@@ -92,10 +107,11 @@ const unhandledRejection = er => {
 
 // thrown error handler
 const uncaughtException = er => {
+  debug('UNCAUGHT EXCEPTION', er)
   const domain = domains.get(executionAsyncId())
   if (domain) {
     try {
-      domain.onerror(er)
+      domain.onerror(er, 'uncaughtException')
       threw = false
     } catch (e) {
       domain.destroy()
@@ -106,6 +122,7 @@ const uncaughtException = er => {
 }
 
 const fatalException = er => {
+  debug('FATAL')
   // prevent infinite recursion
   process.removeListener('uncaughtException', uncaughtException)
   // set an immediate so that the tick queue isn't empty

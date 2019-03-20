@@ -70,12 +70,28 @@ setTimeout(() => {
 }, 500) // time for the other contexts to wrap up
 ```
 
+If you want to limit a Domain to a narrower scope, you can use node's
+[`AsyncResource`](https://nodejs.org/api/async_hooks.html#async_hooks_class_asyncresource)
+class, and instantiate the domain within its `runInAsyncScope(cb)` method.
+From then on, the domain will only be active when running from that Async
+Resource's scope.
+
 ## API
 
-### const d = new Domain(errorHandlerFunction)
+### `process.env.ASYNC_HOOK_DOMAIN_DEBUG = '1'`
+
+Set the `ASYNC_HOOK_DOMAIN_DEBUG` environment variable to `'1'` to print a lot
+of debugging information to stderr.
+
+### const d = new Domain(errorHandlerFunction(error, type))
 
 Create a new Domain and assign it to the current execution context and all
 child contexts that the current one triggers.
+
+The handler function is called with two arguments.  The first is the error that
+was thrown or the rejection value of the rejected Promise.  The second is
+either `'uncaughtException'` or `'unhandledRejection'`, depending on the type
+of event that raised the error.
 
 ### d.parent Domain
 
