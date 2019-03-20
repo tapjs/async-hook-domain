@@ -103,4 +103,9 @@ for which this Domain handles errors.
 
 ### d.destroy() Function
 
-Call to destroy the domain.
+Call to destroy the domain.  This removes it from the system entirely,
+assigning any outstanding ids to its parent, if it has one, or leaving them
+uncovered if not.
+
+This is called implicitly when the domain's last covered execution context is
+destroyed, since at that point, the domain is unreachable anyway.
