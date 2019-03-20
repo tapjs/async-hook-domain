@@ -1,0 +1,44 @@
+{
+  "name": "async-hook-domain",
+  "version": "0.0.1",
+  "description": "An implementation of Domain-like error handling, built on async_hooks",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "source-map-support": "^0.5.11"
+  },
+  "devDependencies": {
+    "tap": "^13.0.0-rc.11"
+  },
+  "scripts": {
+    "test": "tap test/run.js",
+    "snap": "tap test/run.js"
+  },
+  "tap": {
+    "check-coverage": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/isaacs/async-hooks-domain.git"
+  },
+  "keywords": [
+    "async",
+    "hooks",
+    "async_hooks",
+    "domain",
+    "error",
+    "handling",
+    "handler",
+    "uncaughtException",
+    "unhandledRejection",
+    "catch",
+    "promise",
+    "execution",
+    "context"
+  ],
+  "author": "Isaac Z. Schlueter <i@izs.me> (https://blog.izs.me)",
+  "license": "ISC",
+  "files": ["index.js"]
+}
