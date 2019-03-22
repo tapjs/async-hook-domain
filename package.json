@@ -10,11 +10,11 @@
     "source-map-support": "^0.5.11"
   },
   "devDependencies": {
-    "tap": "^13.0.0-rc.11"
+    "tap": "^13.0.0-rc.14"
   },
   "scripts": {
-    "test": "tap test/run.js",
-    "snap": "tap test/run.js",
+    "test": "tap --node-arg=test/run.js test/fixtures",
+    "snap": "tap --node-arg=test/run.js test/fixtures",
     "preversion": "npm test",
     "postversion": "npm publish",
     "postpublish": "git push origin --all; git push origin --tags"
