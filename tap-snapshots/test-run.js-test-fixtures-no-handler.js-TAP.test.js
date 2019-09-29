@@ -18,9 +18,9 @@ exports[`test/run.js test/fixtures/no-handler.js TAP > output 1`] = `
 
 exports[`test/run.js test/fixtures/no-handler.js TAP > stderr 1`] = `
 
-{CWD}/index.js:#
-      current.ids.add(id)
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ^
+{CWD}/test/fixtures/no-handler.js:#
+new Domain()
+^
 TypeError: onerror must be a function
 {STACK}
 

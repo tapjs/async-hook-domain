@@ -177,8 +177,12 @@ const realProcessFatalException = process._fatalException
 
 class Domain {
   constructor (onerror) {
-    if (typeof onerror !== 'function')
-      throw new TypeError('onerror must be a function')
+    if (typeof onerror !== 'function') {
+      // point at where the wrong thing was actually done
+      const er = new TypeError('onerror must be a function')
+      Error.captureStackTrace(er, this.constructor)
+      throw er
+    }
     const eid = executionAsyncId()
     this.ids = new Set([eid])
     this.onerror = onerror
