@@ -10,14 +10,14 @@
     "source-map-support": "^0.5.11"
   },
   "devDependencies": {
-    "tap": "^13.0.0-rc.14"
+    "tap": "^14.6.6"
   },
   "scripts": {
     "test": "tap --node-arg=test/run.js test/fixtures",
     "snap": "tap --node-arg=test/run.js test/fixtures",
     "preversion": "npm test",
     "postversion": "npm publish",
-    "postpublish": "git push origin --all; git push origin --tags"
+    "postpublish": "git push origin --follow-tags"
   },
   "tap": {
     "check-coverage": true
