@@ -1,6 +1,5 @@
 const { executionAsyncId, createHook } = require('async_hooks')
 
-/* istanbul ignore next */
 const debug = process.env.ASYNC_HOOK_DOMAIN_DEBUG !== '1' ? () => {}
 : (() => {
   const {writeSync} = require('fs')
@@ -26,8 +25,8 @@ const activateDomains = () => {
     debug('ACTIVATE')
     domainHook = createHook(hookMethods)
     domainHook.enable()
-    process.on('uncaughtException', uncaughtException)
-    process.on('unhandledRejection', unhandledRejection)
+    process.emit = domainProcessEmit
+    process._fatalException = domainProcessFatalException
   }
 }
 const deactivateDomains = () => {
@@ -35,8 +34,8 @@ const deactivateDomains = () => {
     debug('DEACTIVATE')
     domainHook.disable()
     domainHook = null
-    process.removeListener('uncaughtException', uncaughtException)
-    process.removeListener('unhandledRejection', unhandledRejection)
+    process.emit = realProcessEmit
+    process._fatalException = realProcessFatalException
   }
 }
 
@@ -45,12 +44,11 @@ const hookMethods = {
   init (id, type, triggerId, resource) {
     const current = domains.get(triggerId)
     if (current) {
-      debug('INIT', id, type, resource, current)
+      debug('INIT', id, type, current)
       current.ids.add(id)
       domains.set(id, current)
+      debug('POST INIT', id, type, current)
     }
-    if (type === 'PROMISE')
-      activePromise = resource.promise
   },
 
   promiseResolve (id) {
@@ -66,7 +64,7 @@ const hookMethods = {
 
   destroy (id) {
     const domain = domains.get(id)
-    debug('DESTROY', id, domain)
+    debug('DESTROY', id, domain && domain.ids)
     if (!domain)
       return
     domains.delete(id)
@@ -76,62 +74,106 @@ const hookMethods = {
   },
 }
 
-// Promise rejection handler
-const unhandledRejection = er => {
-  debug('UNHANDLED REJECTION', er)
-  const domain = domains.get(executionAsyncId())
-    || domains.get(promiseExecutionId)
-  if (domain) {
-    try {
-      domain.onerror(er, 'unhandledRejection')
-    } catch (e) {
-      domain.destroy()
-      uncaughtException(e)
-    }
-  } else if (process.listeners('unhandledRejection').length <= 1) {
-    process.removeListener('unhandledRejection', unhandledRejection)
-    /* istanbul ignore else */
-    if (activePromise) {
-      // we reject it a second time, which is somewhat of a weird
-      // side effect, but at this point, we know that the promise
-      // isn't having its rejections handled, or we wouldn't be here.
-      Promise.reject(er)
-      setImmediate(() =>
-        process.on('unhandledRejection', unhandledRejection))
-    } else {
-      // treat as fatal, because how could this even happen?
-      fatalException(er)
+// Dangerous monkey-patching ahead.
+// Errors can bubble up to the top level in one of two ways:
+// 1. thrown
+// 2. promise rejection
+//
+// Thrown errors are easy.  They emit `uncaughtException`, and
+// are considered nonfatal if there are listeners that don't throw.
+// Managing an event listener is relatively straightforward, but we
+// need to recognize when the error ISN'T handled by a domain, and
+// make the error fatal, which is tricky but doable.
+//
+// Promise rejections are harder.  They do one of four possible things,
+// depending on the --unhandled-rejections argument passed to node.
+// - throw:
+//   - call process._fatalException(er) and THEN emits unhandledRejection
+//   - emit unhandledRejection
+//   - if no handlers, warn
+// - ignore: emit only
+// - always warn: emit event, then warn
+// - default:
+//   - emit event
+//   - if not handled, print warning and deprecation
+//
+// When we're ready to make a hard break with the domains builtin, and
+// drop support for everything below 12.11.0, it'd be good to do this with
+// a process.setUncaughtExceptionCaptureCallback().  However, the downside
+// there is that any module that does this has to be a singleton, which
+// feels overly pushy for a library like this.
+//
+// Also, there's been changes in how this all works between v8 and now.
+//
+// To cover all cases, we monkey-patch process._fatalException and .emit
+
+const _handled = Symbol('handled by async-hook-domain')
+const domainProcessEmit = (ev, ...args) => {
+  if (ev === 'unhandledRejection' || ev === 'unaughtException') {
+    debug('DOMAIN PROCESS EMIT', ev, ...args)
+    const er = args[0]
+    const p = args[1]
+    // check to see if we have a domain
+    const fromPromise = ev === 'unhandledRejection'
+    const domain = currentDomain(fromPromise)
+    if (domain) {
+      debug('HAS DOMAIN', domain)
+      if (promiseFatal) {
+        // don't need to handle a second time when the event emits
+        return realProcessEmit.call(process, ev, ...args) || true
+      }
+      try {
+        domain.onerror(er, ev)
+      } catch (e) {
+        domain.destroy()
+        // this is pretty bad.  treat it as a fatal exception, which
+        // may or may not be caught in the next domain up.
+        // We drop 'from promise', because now it's a throw.
+        return domainProcessFatalException(e)
+      }
+      return realProcessEmit.call(process, ev, ...args) || true
     }
   }
+  return realProcessEmit.call(process, ev, ...args)
 }
 
-// thrown error handler
-const uncaughtException = er => {
-  debug('UNCAUGHT EXCEPTION', er)
-  const domain = domains.get(executionAsyncId())
+const currentDomain = fromPromise =>
+  domains.get(executionAsyncId()) ||
+    (fromPromise ? domains.get(promiseExecutionId) : null)
+
+const realProcessEmit = process.emit
+
+let promiseFatal = false
+const domainProcessFatalException = (er, fromPromise) => {
+  debug('_FATAL EXCEPTION', er, fromPromise)
+
+  const domain = currentDomain(fromPromise)
   if (domain) {
+    const ev = fromPromise ? 'unhandledRejection' : 'uncaughtException'
+    // if it's from a promise, then that means --unhandled-rejection=strict
+    // we don't need to handle it a second time.
+    promiseFatal = promiseFatal || fromPromise
     try {
-      domain.onerror(er, 'uncaughtException')
-      threw = false
+      domain.onerror(er, ev)
     } catch (e) {
       domain.destroy()
-      uncaughtException(e)
+      return domainProcessFatalException(e)
     }
-  } else if (process.listeners('uncaughtException').length <= 1)
-    fatalException(er)
+    // we add a handler just to ensure that node knows the event will
+    // be handled.  otherwise we get async hook stack corruption.
+    if (promiseFatal) {
+      // don't blow up our process on a promise if we handled it.
+      return true
+    }
+    process.once(ev, () => {})
+    // this ||true is just a safety guard.  it should always be true.
+    return realProcessFatalException.call(process, er, fromPromise) ||
+      /* istanbul ignore next */ true
+  }
+  return realProcessFatalException.call(process, er, fromPromise)
 }
 
-const fatalException = er => {
-  debug('FATAL')
-  // prevent infinite recursion
-  process.removeListener('uncaughtException', uncaughtException)
-  // set an immediate so that the tick queue isn't empty
-  // otherwise the stderr printing won't make it out in time.
-  /* istanbul ignore next */
-  setImmediate(() => {})
-  // ~ ~ ~ FINISH HIM ~ ~ ~
-  process._fatalException(er)
-}
+const realProcessFatalException = process._fatalException
 
 class Domain {
   constructor (onerror) {

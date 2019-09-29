@@ -18,12 +18,11 @@ d caught 2
 exports[`test/run.js test/fixtures/promise-no-domain.js TAP > stderr 1`] = `
 (node:{PID}) UnhandledPromiseRejectionWarning: no one to catch this
 (node:{PID}) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 1)
-(node:{PID}) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+(node:{PID}) UnhandledPromiseRejectionWarning: happy
+(node:{PID}) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 3)
 (node:{PID}) UnhandledPromiseRejectionWarning: sad
 (node:{PID}) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 4)
 (node:{PID}) UnhandledPromiseRejectionWarning: ok
 (node:{PID}) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 5)
-(node:{PID}) UnhandledPromiseRejectionWarning: happy
-(node:{PID}) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 6)
 
 `

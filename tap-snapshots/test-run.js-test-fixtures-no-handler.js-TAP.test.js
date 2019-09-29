@@ -19,8 +19,8 @@ exports[`test/run.js test/fixtures/no-handler.js TAP > output 1`] = `
 exports[`test/run.js test/fixtures/no-handler.js TAP > stderr 1`] = `
 
 {CWD}/index.js:#
-// this is to work around the fact that node loses the executionAsyncId
-                                                                                                                                                                                                                            ^
+      current.ids.add(id)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ^
 TypeError: onerror must be a function
 {STACK}
 
