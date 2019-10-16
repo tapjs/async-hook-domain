@@ -205,6 +205,7 @@ class Domain {
     if (parent) {
       for (const id of this.ids) {
         domains.set(id, parent)
+        parent.ids.add(id)
       }
     } else {
       for (const id of this.ids) {
