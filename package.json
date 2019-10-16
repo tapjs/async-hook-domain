@@ -1,6 +1,6 @@
 {
   "name": "async-hook-domain",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "An implementation of Domain-like error handling, built on async_hooks",
   "main": "index.js",
   "directories": {
