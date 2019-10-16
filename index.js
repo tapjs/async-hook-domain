@@ -8,7 +8,7 @@ const debug = process.env.ASYNC_HOOK_DOMAIN_DEBUG !== '1' ? () => {}
 })()
 
 const sms = require('source-map-support')
-sms.install({environment:'node'})
+sms.install({environment:'node', hookRequire: true})
 
 const domains = new Map()
 
