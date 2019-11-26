@@ -2,9 +2,10 @@ const t = require('tap')
 
 const fs = require('fs')
 const file = process.argv[2]
+
 const node = process.execPath
 const {execFile} = require('child_process')
-const {relative} = require('path')
+const {relative, resolve} = require('path')
 
 t.cleanSnapshot = o => o
   .replace(/(\n    at [^\n]*)+/g, '\n{STACK}')
@@ -19,7 +20,12 @@ const runTest = file => t => {
   if (match && process.version.match(/^v([89]|1[01])\./)) {
     return t.plan(0, `skip prior to node v12 (current: ${process.version})`)
   }
-  const args = [...(match ? match[1].trim().split(' ') : []), file]
+  const args = [
+    '--require',
+    resolve(__dirname, 'sms.js'),
+    ...(match ? match[1].trim().split(' ') : []),
+    file
+  ]
   return execFile(node, args, (er, o, e) => {
     t.matchSnapshot(er ? {code:er.code, signal: er.signal} : null, 'error')
     t.matchSnapshot(o, 'output')

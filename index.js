@@ -7,9 +7,6 @@ const debug = process.env.ASYNC_HOOK_DOMAIN_DEBUG !== '1' ? () => {}
   return (...args) => writeSync(2, format(...args) + '\n')
 })()
 
-const sms = require('source-map-support')
-sms.install({environment:'node', hookRequire: true})
-
 const domains = new Map()
 
 // this is to work around the fact that node loses the executionAsyncId

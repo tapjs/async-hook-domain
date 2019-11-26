@@ -6,10 +6,8 @@
   "directories": {
     "test": "test"
   },
-  "dependencies": {
-    "source-map-support": "^0.5.11"
-  },
   "devDependencies": {
+    "source-map-support": "^0.5.16",
     "tap": "^14.6.6"
   },
   "scripts": {
