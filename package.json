@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/isaacs/async-hook-domain.git"
+    "url": "git://github.com/tapjs/async-hook-domain.git"
   },
   "keywords": [
     "async",
