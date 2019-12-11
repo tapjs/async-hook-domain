@@ -4,6 +4,8 @@ An implementation of the error-handling properties of the (deprecated) `domain`
 node core module, re-implemented on top of
 [`async_hooks`](https://nodejs.org/api/async_hooks.html).
 
+[![Linux Build](https://travis-ci.org/tapjs/async-hook-domain.svg?branch=master)](https://travis-ci.org/tapjs/async-hook-domain)
+
 ## USAGE
 
 ```js
