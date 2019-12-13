@@ -53,12 +53,6 @@ const hookMethods = {
     promiseExecutionId = id
   },
 
-  after (id) {
-    debug('AFTER', id)
-    if (id === promiseExecutionId)
-      promiseExecutionId = null
-  },
-
   destroy (id) {
     const domain = domains.get(id)
     debug('DESTROY', id, domain && domain.ids)
