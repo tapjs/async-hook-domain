@@ -22,6 +22,6 @@ CAUGHT unhandledRejection Error: happy2
 {STACK}
 (node:{PID}) UnhandledPromiseRejectionWarning: Error: sad
 {STACK}
-(node:{PID}) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 3)
+(node:{PID}) UnhandledPromiseRejectionWarning: ... (rejection id: 3)
 
 `

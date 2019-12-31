@@ -13,6 +13,7 @@ t.cleanSnapshot = o => o
   .replace(/\.js:[0-9]+(?::[0-9]+)?/g, '.js:#')
   .replace(/[^\n]*DEP0018[^\n]*\n/g, '')
   .replace(/\(node:\d+\)/g, '(node:{PID})')
+  .replace(/(\(node:{PID}\) UnhandledPromiseRejectionWarning:).*?(\(rejection id: \d+\)\n)/g, '$1 ... $2')
 
 const runTest = file => t => {
   const firstLine = fs.readFileSync(file, 'utf8').split(/\n/)[0]
