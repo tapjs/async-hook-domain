@@ -100,7 +100,7 @@ const hookMethods = {
 
 const _handled = Symbol('handled by async-hook-domain')
 const domainProcessEmit = (ev, ...args) => {
-  if (ev === 'unhandledRejection' || ev === 'unaughtException') {
+  if (ev === 'unhandledRejection' || ev === 'uncaughtException') {
     debug('DOMAIN PROCESS EMIT', ev, ...args)
     const er = args[0]
     const p = args[1]
