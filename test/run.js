@@ -14,6 +14,7 @@ t.cleanSnapshot = o => o
   .replace(/[^\n]*DEP0018[^\n]*\n/g, '')
   .replace(/\(node:\d+\)/g, '(node:{PID})')
   .replace(/(\(node:{PID}\) UnhandledPromiseRejectionWarning:).*?(\(rejection id: \d+\)\n)/g, '$1 ... $2')
+  .split('\n').filter(l => !/node --trace-/.test(l)).join('\n')
 
 const runTest = file => t => {
   const firstLine = fs.readFileSync(file, 'utf8').split(/\n/)[0]
