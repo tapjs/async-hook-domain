@@ -18,14 +18,23 @@ t.cleanSnapshot = o => o
 
 const runTest = file => t => {
   const firstLine = fs.readFileSync(file, 'utf8').split(/\n/)[0]
+  // default all node versions to old default for consistency
   const match = firstLine && firstLine.match(/^#!\/usr\/bin\/env node (.*)$/)
-  if (match && process.version.match(/^v([89]|1[01])\./)) {
+    || [,'']
+
+  // node 10 doesn't have support for the --unhandled-rejections node argument
+  if (match[0] && process.version.match(/^v([89]|1[01])\./)) {
     return t.plan(0, `skip prior to node v12 (current: ${process.version})`)
   }
+
+  if (!/--unhandled-rejections=/.test(match[1])) {
+    match[1] += ' --unhandled-rejections=warn'
+  }
+
   const args = [
     '--require',
     resolve(__dirname, 'sms.js'),
-    ...(match ? match[1].trim().split(' ') : []),
+    ...match[1].trim().split(' '),
     file
   ]
   return execFile(node, args, (er, o, e) => {

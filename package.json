@@ -11,13 +11,16 @@
     "tap": "^14.10.2"
   },
   "scripts": {
-    "test": "tap --node-arg=test/run.js test/fixtures",
-    "snap": "tap --node-arg=test/run.js test/fixtures",
+    "test": "tap test/fixtures",
+    "snap": "tap test/fixtures",
     "preversion": "npm test",
     "postversion": "npm publish",
     "prepublishOnly": "git push origin --follow-tags"
   },
   "tap": {
+    "node-arg": [
+      "test/run.js"
+    ],
     "check-coverage": true
   },
   "repository": {

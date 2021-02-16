@@ -18,11 +18,15 @@ d caught 2
 exports[`test/run.js test/fixtures/promise-no-domain.js TAP > stderr 1`] = `
 (node:{PID}) UnhandledPromiseRejectionWarning: no one to catch this
 (node:{PID}) UnhandledPromiseRejectionWarning: ... (rejection id: 1)
+(node:{PID}) UnhandledPromiseRejectionWarning: caught 1
+(node:{PID}) UnhandledPromiseRejectionWarning: ... (rejection id: 2)
 (node:{PID}) UnhandledPromiseRejectionWarning: happy
 (node:{PID}) UnhandledPromiseRejectionWarning: ... (rejection id: 3)
 (node:{PID}) UnhandledPromiseRejectionWarning: sad
 (node:{PID}) UnhandledPromiseRejectionWarning: ... (rejection id: 4)
 (node:{PID}) UnhandledPromiseRejectionWarning: ok
 (node:{PID}) UnhandledPromiseRejectionWarning: ... (rejection id: 5)
+(node:{PID}) UnhandledPromiseRejectionWarning: caught 2
+(node:{PID}) UnhandledPromiseRejectionWarning: ... (rejection id: 6)
 
 `
