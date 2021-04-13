@@ -1,6 +1,11 @@
 const { executionAsyncId, createHook } = require('async_hooks')
 
-const debug = process.env.ASYNC_HOOK_DOMAIN_DEBUG !== '1' ? () => {}
+// grab a reference to this right away, in case the user changes it
+// weird thing to do, but this is used in tests a lot, where weird
+// things are quite common.
+const proc = process
+
+const debug = proc.env.ASYNC_HOOK_DOMAIN_DEBUG !== '1' ? () => {}
 : (() => {
   const {writeSync} = require('fs')
   const {format} = require('util')
@@ -22,8 +27,8 @@ const activateDomains = () => {
     debug('ACTIVATE')
     domainHook = createHook(hookMethods)
     domainHook.enable()
-    process.emit = domainProcessEmit
-    process._fatalException = domainProcessFatalException
+    proc.emit = domainProcessEmit
+    proc._fatalException = domainProcessFatalException
   }
 }
 const deactivateDomains = () => {
@@ -31,8 +36,8 @@ const deactivateDomains = () => {
     debug('DEACTIVATE')
     domainHook.disable()
     domainHook = null
-    process.emit = realProcessEmit
-    process._fatalException = realProcessFatalException
+    proc.emit = realProcessEmit
+    proc._fatalException = realProcessFatalException
   }
 }
 
@@ -111,7 +116,7 @@ const domainProcessEmit = (ev, ...args) => {
       debug('HAS DOMAIN', domain)
       if (promiseFatal) {
         // don't need to handle a second time when the event emits
-        return realProcessEmit.call(process, ev, ...args) || true
+        return realProcessEmit.call(proc, ev, ...args) || true
       }
       try {
         domain.onerror(er, ev)
@@ -122,17 +127,17 @@ const domainProcessEmit = (ev, ...args) => {
         // We drop 'from promise', because now it's a throw.
         return domainProcessFatalException(e)
       }
-      return realProcessEmit.call(process, ev, ...args) || true
+      return realProcessEmit.call(proc, ev, ...args) || true
     }
   }
-  return realProcessEmit.call(process, ev, ...args)
+  return realProcessEmit.call(proc, ev, ...args)
 }
 
 const currentDomain = fromPromise =>
   domains.get(executionAsyncId()) ||
     (fromPromise ? domains.get(promiseExecutionId) : null)
 
-const realProcessEmit = process.emit
+const realProcessEmit = proc.emit
 
 let promiseFatal = false
 const domainProcessFatalException = (er, fromPromise) => {
@@ -156,15 +161,15 @@ const domainProcessFatalException = (er, fromPromise) => {
       // don't blow up our process on a promise if we handled it.
       return true
     }
-    process.once(ev, () => {})
+    proc.once(ev, () => {})
     // this ||true is just a safety guard.  it should always be true.
-    return realProcessFatalException.call(process, er, fromPromise) ||
+    return realProcessFatalException.call(proc, er, fromPromise) ||
       /* istanbul ignore next */ true
   }
-  return realProcessFatalException.call(process, er, fromPromise)
+  return realProcessFatalException.call(proc, er, fromPromise)
 }
 
-const realProcessFatalException = process._fatalException
+const realProcessFatalException = proc._fatalException
 
 class Domain {
   constructor (onerror) {
