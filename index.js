@@ -3,7 +3,12 @@ const { executionAsyncId, createHook } = require('async_hooks')
 // grab a reference to this right away, in case the user changes it
 // weird thing to do, but this is used in tests a lot, where weird
 // things are quite common.
-const proc = process
+const proc = typeof process === 'object' && process ? process : /* istanbul ignore next */ {
+  env: {},
+  emit: /* istanbul ignore next */ () => {},
+  once: /* istanbul ignore next */ () => {},
+  _fatalException: /* istanbul ignore next */ () => {},
+}
 
 const debug = proc.env.ASYNC_HOOK_DOMAIN_DEBUG !== '1' ? () => {}
 : (() => {
