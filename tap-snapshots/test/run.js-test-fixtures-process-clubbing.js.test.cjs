@@ -7,7 +7,7 @@
 'use strict'
 exports[`test/run.js test/fixtures/process-clubbing.js TAP > error 1`] = `
 Object {
-  "code": 7,
+  "code": 1,
   "signal": null,
 }
 `
@@ -18,10 +18,17 @@ caught: thrown
 `
 
 exports[`test/run.js test/fixtures/process-clubbing.js TAP > stderr 1`] = `
-{CWD}/node_modules/source-map-support/source-map-support.js:#
-    var headerLength = noHeader.test(process.version) ? 0 : 62;
-                                             ^
 
-TypeError: Cannot read property 'version' of null
+{CWD}/test/fixtures/process-clubbing.js:#
+  throw new Error('this will not be caught')
+        ^
+Error: this will not be caught
+{STACK}
+{CWD}/test/fixtures/process-clubbing.js:#
+  throw new Error('this will not be caught')
+  ^
+
+Error: this will not be caught
+{STACK}
 
 `
