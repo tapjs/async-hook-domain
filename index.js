@@ -52,7 +52,7 @@ const deactivateDomains = () => {
 
 // the hook callbacks
 const hookMethods = {
-  init(id, type, triggerId, resource) {
+  init(id, type, triggerId, _) {
     const current = domains.get(triggerId)
     if (current) {
       debug('INIT', id, type, current)
@@ -114,12 +114,10 @@ const hookMethods = {
 //
 // To cover all cases, we monkey-patch process._fatalException and .emit
 
-const _handled = Symbol('handled by async-hook-domain')
 const domainProcessEmit = (ev, ...args) => {
   if (ev === 'unhandledRejection') {
     debug('DOMAIN PROCESS EMIT', ev, ...args)
     const er = args[0]
-    const p = args[1]
     // check to see if we have a domain
     const fromPromise = ev === 'unhandledRejection'
     const domain = currentDomain(fromPromise)
