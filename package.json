@@ -4,6 +4,7 @@
   "description": "An implementation of Domain-like error handling, built on async_hooks",
   "main": "index.js",
   "devDependencies": {
+    "@types/node": "^18.11.9",
     "eslint-config-prettier": "^8.5.0",
     "prettier": "^2.7.1",
     "source-map-support": "^0.5.16",
