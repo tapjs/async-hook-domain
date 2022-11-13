@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "source-map-support": "^0.5.16",
-    "tap": "^15.1.6"
+    "tap": "^16.3.1"
   },
   "scripts": {
     "test": "tap test/fixtures",
