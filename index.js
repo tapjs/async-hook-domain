@@ -3,19 +3,24 @@ const { executionAsyncId, createHook } = require('async_hooks')
 // grab a reference to this right away, in case the user changes it
 // weird thing to do, but this is used in tests a lot, where weird
 // things are quite common.
-const proc = typeof process === 'object' && process ? process : /* istanbul ignore next */ {
-  env: {},
-  emit: /* istanbul ignore next */ () => {},
-  once: /* istanbul ignore next */ () => {},
-  _fatalException: /* istanbul ignore next */ () => {},
-}
+const proc =
+  typeof process === 'object' && process
+    ? process
+    : /* istanbul ignore next */ {
+        env: {},
+        emit: /* istanbul ignore next */ () => {},
+        once: /* istanbul ignore next */ () => {},
+        _fatalException: /* istanbul ignore next */ () => {},
+      }
 
-const debug = proc.env.ASYNC_HOOK_DOMAIN_DEBUG !== '1' ? () => {}
-: (() => {
-  const {writeSync} = require('fs')
-  const {format} = require('util')
-  return (...args) => writeSync(2, format(...args) + '\n')
-})()
+const debug =
+  proc.env.ASYNC_HOOK_DOMAIN_DEBUG !== '1'
+    ? () => {}
+    : (() => {
+        const { writeSync } = require('fs')
+        const { format } = require('util')
+        return (...args) => writeSync(2, format(...args) + '\n')
+      })()
 
 const domains = new Map()
 
@@ -23,7 +28,6 @@ const domains = new Map()
 // when a Promise rejects within an async context, for some reason.
 // See: https://github.com/nodejs/node/issues/26794
 let promiseExecutionId = null
-let activePromise = null
 
 // the async hook activation and deactivation
 let domainHook = null
@@ -48,7 +52,7 @@ const deactivateDomains = () => {
 
 // the hook callbacks
 const hookMethods = {
-  init (id, type, triggerId, resource) {
+  init(id, type, triggerId, resource) {
     const current = domains.get(triggerId)
     if (current) {
       debug('INIT', id, type, current)
@@ -58,20 +62,22 @@ const hookMethods = {
     }
   },
 
-  promiseResolve (id) {
+  promiseResolve(id) {
     debug('PROMISE RESOLVE', id)
     promiseExecutionId = id
   },
 
-  destroy (id) {
+  destroy(id) {
     const domain = domains.get(id)
     debug('DESTROY', id, domain && domain.ids)
-    if (!domain)
+    if (!domain) {
       return
+    }
     domains.delete(id)
     domain.ids.delete(id)
-    if (!domain.ids.size)
+    if (!domain.ids.size) {
       domain.destroy()
+    }
   },
 }
 
@@ -140,7 +146,7 @@ const domainProcessEmit = (ev, ...args) => {
 
 const currentDomain = fromPromise =>
   domains.get(executionAsyncId()) ||
-    (fromPromise ? domains.get(promiseExecutionId) : null)
+  (fromPromise ? domains.get(promiseExecutionId) : null)
 
 const realProcessEmit = proc.emit
 
@@ -168,8 +174,10 @@ const domainProcessFatalException = (er, fromPromise) => {
     }
     proc.once(ev, () => {})
     // this ||true is just a safety guard.  it should always be true.
-    return realProcessFatalException.call(proc, er, fromPromise) ||
+    return (
+      realProcessFatalException.call(proc, er, fromPromise) ||
       /* istanbul ignore next */ true
+    )
   }
   return realProcessFatalException.call(proc, er, fromPromise)
 }
@@ -177,7 +185,7 @@ const domainProcessFatalException = (er, fromPromise) => {
 const realProcessFatalException = proc._fatalException
 
 class Domain {
-  constructor (onerror) {
+  constructor(onerror) {
     if (typeof onerror !== 'function') {
       // point at where the wrong thing was actually done
       const er = new TypeError('onerror must be a function')
@@ -193,9 +201,10 @@ class Domain {
     activateDomains()
   }
 
-  destroy () {
-    if (this.destroyed)
+  destroy() {
+    if (this.destroyed) {
       return
+    }
     this.destroyed = true
     // find the nearest non-destroyed parent, assign all ids to it
     let parent = this.parent
@@ -214,8 +223,9 @@ class Domain {
       }
     }
     this.ids = new Set()
-    if (!domains.size)
+    if (!domains.size) {
       deactivateDomains()
+    }
   }
 }
 

@@ -3,19 +3,34 @@
   "version": "2.0.4",
   "description": "An implementation of Domain-like error handling, built on async_hooks",
   "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
   "devDependencies": {
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "^2.7.1",
     "source-map-support": "^0.5.16",
     "tap": "^16.3.1"
   },
   "scripts": {
+    "format": "prettier --write . --loglevel warn",
     "test": "tap test/fixtures",
     "snap": "tap test/fixtures",
     "preversion": "npm test",
     "postversion": "npm publish",
     "prepublishOnly": "git push origin --follow-tags"
+  },
+  "eslintIgnore": [
+    "/node_modules",
+    "/tap-snapshots"
+  ],
+  "prettier": {
+    "semi": false,
+    "printWidth": 80,
+    "tabWidth": 2,
+    "useTabs": false,
+    "singleQuote": true,
+    "jsxSingleQuote": false,
+    "bracketSameLine": true,
+    "arrowParens": "avoid",
+    "endOfLine": "lf"
   },
   "tap": {
     "node-arg": [
