@@ -5,24 +5,26 @@
  * Make sure to inspect the output below.  Do not ignore changes!
  */
 'use strict'
-exports[`test/run.js test/fixtures/promise-rejections.js TAP > error 1`] = `
+exports[`test/run.js test/fixtures/promise-rejections-unhandled-strict-with-space.js TAP > error 1`] = `
 Object {
   "code": 1,
   "signal": null,
 }
 `
 
-exports[`test/run.js test/fixtures/promise-rejections.js TAP > output 1`] = `
+exports[`test/run.js test/fixtures/promise-rejections-unhandled-strict-with-space.js TAP > output 1`] = `
 happy timeout
-sad timeout
 
 `
 
-exports[`test/run.js test/fixtures/promise-rejections.js TAP > stderr 1`] = `
+exports[`test/run.js test/fixtures/promise-rejections-unhandled-strict-with-space.js TAP > stderr 1`] = `
 CAUGHT unhandledRejection happy
 CAUGHT unhandledRejection happy2
-(node:{PID}) UnhandledPromiseRejectionWarning: Error: sad
+
+{CWD}/test/fixtures/promise-rejections.js:#
+  Promise.reject(new Error('sad'))
+                 ^
+Error: sad
 {STACK}
-(node:{PID}) UnhandledPromiseRejectionWarning: ... (rejection id: 3)
 
 `

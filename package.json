@@ -64,6 +64,6 @@
     "index.js"
   ],
   "engines": {
-    "node": ">=10"
+    "node": ">=14"
   }
 }

@@ -14,7 +14,9 @@ exports[`test/run.js test/fixtures/debug.js TAP > output 1`] = `
 `
 
 exports[`test/run.js test/fixtures/debug.js TAP > stderr 1`] = `
+NEW DOMAIN 1 1 Set(1) { 1 }
 ACTIVATE
+DESTROY DOMAIN 1 1 Set(1) { 1 }
 DEACTIVATE
 
 `

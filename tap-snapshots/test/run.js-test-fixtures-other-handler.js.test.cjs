@@ -16,7 +16,5 @@ p.uR foo
 `
 
 exports[`test/run.js test/fixtures/other-handler.js TAP > stderr 1`] = `
-(node:{PID}) UnhandledPromiseRejectionWarning: foo
-(node:{PID}) UnhandledPromiseRejectionWarning: ... (rejection id: 1)
 
 `

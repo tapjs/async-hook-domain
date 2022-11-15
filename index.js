@@ -7,27 +7,49 @@ const proc =
   typeof process === 'object' && process
     ? process
     : /* istanbul ignore next */ {
+        _handler: null,
         env: {},
-        emit: /* istanbul ignore next */ () => {},
-        once: /* istanbul ignore next */ () => {},
-        _fatalException: /* istanbul ignore next */ () => {},
+        execArgv: [],
+        hasUncaughtExceptionCaptureCallback: /* istanbul ignore next */ () =>
+          !!proc._handler,
+        setUncaughtExceptionCaptureCallback: /* istanbul ignore next */ fn =>
+          (proc._handler = fn),
+        once: /* istanbul ignore next */ (_ev, _fn) => proc,
+        on: /* istanbul ignore next */ (_ev, _fn) => proc,
+        removeListener: /* istanbul ignore next */ _fn => proc,
       }
 
-const debug =
-  proc.env.ASYNC_HOOK_DOMAIN_DEBUG !== '1'
-    ? () => {}
-    : (() => {
-        const { writeSync } = require('fs')
-        const { format } = require('util')
-        return (...args) => writeSync(2, format(...args) + '\n')
-      })()
+const debugAlways = (() => {
+  const { writeSync } = require('fs')
+  const { format } = require('util')
+  return (...args) => writeSync(2, format(...args) + '\n')
+})()
+const debug = proc.env.ASYNC_HOOK_DOMAIN_DEBUG !== '1' ? () => {} : debugAlways
 
 const domains = new Map()
 
-// this is to work around the fact that node loses the executionAsyncId
-// when a Promise rejects within an async context, for some reason.
-// See: https://github.com/nodejs/node/issues/26794
-let promiseExecutionId = null
+// possible values here:
+// throw (default)
+//    we let our rejection handler call the domain handler
+// none, warn-with-error-code
+//    same as default
+// warn
+//    same as default (no way to make it any less noisy, sadly)
+// strict
+//    set the uncaughtExceptionMonitor, because it will throw,
+//    but do NOT set our rejection handler, or it'll double-handle
+const unhandledRejectionMode = (() => {
+  let mode = 'throw'
+  for (let i = 0; i < proc.execArgv.length; i++) {
+    const m = process.execArgv[i]
+    if (m.startsWith('--unhandled-rejections=')) {
+      mode = m.substring('--unhandled-rejections='.length)
+    } else if (m === '--unhandled-rejections') {
+      mode = proc.execArgv[i + 1]
+    }
+  }
+  return mode
+})()
 
 // the async hook activation and deactivation
 let domainHook = null
@@ -36,8 +58,10 @@ const activateDomains = () => {
     debug('ACTIVATE')
     domainHook = createHook(hookMethods)
     domainHook.enable()
-    proc.emit = domainProcessEmit
-    proc._fatalException = domainProcessFatalException
+    proc.on('uncaughtExceptionMonitor', domainErrorHandler)
+    if (unhandledRejectionMode !== 'strict') {
+      proc.emit = domainProcessEmit
+    }
   }
 }
 const deactivateDomains = () => {
@@ -45,31 +69,87 @@ const deactivateDomains = () => {
     debug('DEACTIVATE')
     domainHook.disable()
     domainHook = null
-    proc.emit = realProcessEmit
-    proc._fatalException = realProcessFatalException
+    proc.removeListener('uncaughtExceptionMonitor', domainErrorHandler)
+    proc.emit = originalProcessEmit
   }
+}
+
+// monkey patch to silently listen on unhandledRejection, without
+// marking the event as 'handled' unless we handled it.
+// Do nothing if there's a user handler for the event, though.
+const originalProcessEmit = proc.emit
+const domainProcessEmit = (ev, ...args) => {
+  if (
+    ev !== 'unhandledRejection' ||
+    proc.listeners('unhandledRejection').length
+  ) {
+    return originalProcessEmit.call(proc, ev, ...args)
+  }
+  const er = args[0]
+  return domainErrorHandler(er, 'unhandledRejection', true)
+}
+
+const domainErrorHandler = (er, ev, rejectionHandler = false) => {
+  debug('AHD MAYBE HANDLE?', ev, er)
+  // if anything else attached a handler, then it's their problem,
+  // not ours.  get out of the way.
+  if (
+    proc.hasUncaughtExceptionCaptureCallback() ||
+    proc.listeners('uncaughtException').length > 0
+  ) {
+    debug('OTHER HANDLER ALREADY SET')
+    return false
+  }
+  const domain = currentDomain()
+  if (domain) {
+    debug('HAVE DOMAIN')
+    try {
+      domain.onerror(er, ev)
+    } catch (e) {
+      debug('ONERROR THREW', e)
+      domain.destroy()
+      // this is pretty bad.  treat it as a fatal exception, which
+      // may or may not be caught in the next domain up.
+      // We drop 'from promise', because now it's a throw.
+      if (domainErrorHandler(e)) {
+        return true
+      }
+      throw e
+    }
+    // at this point, we presumably handled the error, and attach a
+    // no-op one-time handler to just prevent the crash from happening.
+    if (!rejectionHandler) {
+      proc.setUncaughtExceptionCaptureCallback(() => {
+        debug('UECC ONCE')
+        proc.setUncaughtExceptionCaptureCallback(null)
+      })
+      // in strict mode, node raises the error *before* the uR event,
+      // and it warns if the uR event is not handled.
+      if (unhandledRejectionMode === 'strict') {
+        process.once('unhandledRejection', () => {})
+      }
+    }
+    return true
+  }
+  return false
 }
 
 // the hook callbacks
 const hookMethods = {
-  init(id, type, triggerId, _) {
+  init(id, type, triggerId) {
+    debug('INIT', id, type, triggerId)
     const current = domains.get(triggerId)
     if (current) {
-      debug('INIT', id, type, current)
+      debug('INIT have current', current)
       current.ids.add(id)
       domains.set(id, current)
       debug('POST INIT', id, type, current)
     }
   },
 
-  promiseResolve(id) {
-    debug('PROMISE RESOLVE', id)
-    promiseExecutionId = id
-  },
-
   destroy(id) {
     const domain = domains.get(id)
-    debug('DESTROY', id, domain && domain.ids)
+    debug('DESTROY', id)
     if (!domain) {
       return
     }
@@ -81,107 +161,9 @@ const hookMethods = {
   },
 }
 
-// Dangerous monkey-patching ahead.
-// Errors can bubble up to the top level in one of two ways:
-// 1. thrown
-// 2. promise rejection
-//
-// Thrown errors are easy.  They emit `uncaughtException`, and
-// are considered nonfatal if there are listeners that don't throw.
-// Managing an event listener is relatively straightforward, but we
-// need to recognize when the error ISN'T handled by a domain, and
-// make the error fatal, which is tricky but doable.
-//
-// Promise rejections are harder.  They do one of four possible things,
-// depending on the --unhandled-rejections argument passed to node.
-// - throw:
-//   - call process._fatalException(er) and THEN emits unhandledRejection
-//   - emit unhandledRejection
-//   - if no handlers, warn
-// - ignore: emit only
-// - always warn: emit event, then warn
-// - default:
-//   - emit event
-//   - if not handled, print warning and deprecation
-//
-// When we're ready to make a hard break with the domains builtin, and
-// drop support for everything below 12.11.0, it'd be good to do this with
-// a process.setUncaughtExceptionCaptureCallback().  However, the downside
-// there is that any module that does this has to be a singleton, which
-// feels overly pushy for a library like this.
-//
-// Also, there's been changes in how this all works between v8 and now.
-//
-// To cover all cases, we monkey-patch process._fatalException and .emit
+const currentDomain = () => domains.get(executionAsyncId())
 
-const domainProcessEmit = (ev, ...args) => {
-  if (ev === 'unhandledRejection') {
-    debug('DOMAIN PROCESS EMIT', ev, ...args)
-    const er = args[0]
-    // check to see if we have a domain
-    const fromPromise = ev === 'unhandledRejection'
-    const domain = currentDomain(fromPromise)
-    if (domain) {
-      debug('HAS DOMAIN', domain)
-      if (promiseFatal) {
-        // don't need to handle a second time when the event emits
-        return realProcessEmit.call(proc, ev, ...args) || true
-      }
-      try {
-        domain.onerror(er, ev)
-      } catch (e) {
-        domain.destroy()
-        // this is pretty bad.  treat it as a fatal exception, which
-        // may or may not be caught in the next domain up.
-        // We drop 'from promise', because now it's a throw.
-        return domainProcessFatalException(e)
-      }
-      return realProcessEmit.call(proc, ev, ...args) || true
-    }
-  }
-  return realProcessEmit.call(proc, ev, ...args)
-}
-
-const currentDomain = fromPromise =>
-  domains.get(executionAsyncId()) ||
-  (fromPromise ? domains.get(promiseExecutionId) : null)
-
-const realProcessEmit = proc.emit
-
-let promiseFatal = false
-const domainProcessFatalException = (er, fromPromise) => {
-  debug('_FATAL EXCEPTION', er, fromPromise)
-
-  const domain = currentDomain(fromPromise)
-  if (domain) {
-    const ev = fromPromise ? 'unhandledRejection' : 'uncaughtException'
-    // if it's from a promise, then that means --unhandled-rejection=strict
-    // we don't need to handle it a second time.
-    promiseFatal = promiseFatal || fromPromise
-    try {
-      domain.onerror(er, ev)
-    } catch (e) {
-      domain.destroy()
-      return domainProcessFatalException(e)
-    }
-    // we add a handler just to ensure that node knows the event will
-    // be handled.  otherwise we get async hook stack corruption.
-    if (promiseFatal) {
-      // don't blow up our process on a promise if we handled it.
-      return true
-    }
-    proc.once(ev, () => {})
-    // this ||true is just a safety guard.  it should always be true.
-    return (
-      realProcessFatalException.call(proc, er, fromPromise) ||
-      /* istanbul ignore next */ true
-    )
-  }
-  return realProcessFatalException.call(proc, er, fromPromise)
-}
-
-const realProcessFatalException = proc._fatalException
-
+let id = 1
 class Domain {
   constructor(onerror) {
     if (typeof onerror !== 'function') {
@@ -191,11 +173,14 @@ class Domain {
       throw er
     }
     const eid = executionAsyncId()
+    this.eid = eid
+    this.id = id++
     this.ids = new Set([eid])
     this.onerror = onerror
-    this.parent = domains.get(executionAsyncId())
+    this.parent = domains.get(eid)
     this.destroyed = false
     domains.set(eid, this)
+    debug('NEW DOMAIN', this.id, this.eid, this.ids)
     activateDomains()
   }
 
@@ -203,6 +188,7 @@ class Domain {
     if (this.destroyed) {
       return
     }
+    debug('DESTROY DOMAIN', this.id, this.eid, this.ids)
     this.destroyed = true
     // find the nearest non-destroyed parent, assign all ids to it
     let parent = this.parent

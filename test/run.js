@@ -14,6 +14,7 @@ t.cleanSnapshot = o => o
   .replace(/[^\n]*DEP0018[^\n]*\n/g, '')
   .replace(/\(node:\d+\)/g, '(node:{PID})')
   .replace(/(\(node:{PID}\) UnhandledPromiseRejectionWarning:).*?(\(rejection id: \d+\)\n)/g, '$1 ... $2')
+  .replace(/\nNode\.js v?[0-9]+\.[0-9]+\.[0-9]+\n+/g, '')
   .split('\n').filter(l => !/node --trace-/.test(l)).join('\n')
 
 const runTest = file => t => {
@@ -28,7 +29,7 @@ const runTest = file => t => {
   }
 
   if (!/--unhandled-rejections=/.test(match[1])) {
-    match[1] += ' --unhandled-rejections=warn'
+    match[1] += ' --unhandled-rejections=warn-with-error-code'
   }
 
   const args = [
@@ -37,6 +38,7 @@ const runTest = file => t => {
     ...match[1].trim().split(' '),
     file
   ]
+  t.comment(`node ${args.join(' ')}`)
   return execFile(node, args, (er, o, e) => {
     t.matchSnapshot(er ? {code:er.code, signal: er.signal} : null, 'error')
     t.matchSnapshot(o, 'output')

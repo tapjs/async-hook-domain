@@ -16,13 +16,11 @@ sad timeout
 `
 
 exports[`test/run.js test/fixtures/promise-rejections-unhandled-warn.js TAP > stderr 1`] = `
-CAUGHT unhandledRejection Error: happy
-{STACK}
+CAUGHT unhandledRejection happy
 (node:{PID}) UnhandledPromiseRejectionWarning: Error: happy
 {STACK}
 (node:{PID}) UnhandledPromiseRejectionWarning: ... (rejection id: 1)
-CAUGHT unhandledRejection Error: happy2
-{STACK}
+CAUGHT unhandledRejection happy2
 (node:{PID}) UnhandledPromiseRejectionWarning: Error: happy2
 {STACK}
 (node:{PID}) UnhandledPromiseRejectionWarning: ... (rejection id: 2)

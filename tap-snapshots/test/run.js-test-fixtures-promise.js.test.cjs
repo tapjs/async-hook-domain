@@ -17,11 +17,5 @@ d rejection unhandledRejection
 `
 
 exports[`test/run.js test/fixtures/promise.js TAP > stderr 1`] = `
-(node:{PID}) UnhandledPromiseRejectionWarning: happy
-(node:{PID}) UnhandledPromiseRejectionWarning: ... (rejection id: 1)
-(node:{PID}) UnhandledPromiseRejectionWarning: 1234
-(node:{PID}) UnhandledPromiseRejectionWarning: ... (rejection id: 2)
-(node:{PID}) UnhandledPromiseRejectionWarning: rejection
-(node:{PID}) UnhandledPromiseRejectionWarning: ... (rejection id: 3)
 
 `
