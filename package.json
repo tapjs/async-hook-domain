@@ -61,7 +61,8 @@
   "author": "Isaac Z. Schlueter <i@izs.me> (https://blog.izs.me)",
   "license": "ISC",
   "files": [
-    "index.js"
+    "index.js",
+    "index.d.ts"
   ],
   "engines": {
     "node": ">=16"
