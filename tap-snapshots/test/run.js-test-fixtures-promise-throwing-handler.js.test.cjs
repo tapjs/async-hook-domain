@@ -10,17 +10,15 @@ Object {
   "code": 1,
   "signal": null,
 }
+
 `
 
 exports[`test/run.js test/fixtures/promise-throwing-handler.js TAP > output 1`] = `
 
+
 `
 
 exports[`test/run.js test/fixtures/promise-throwing-handler.js TAP > stderr 1`] = `
-
-{CWD}/test/fixtures/promise-throwing-handler.js:#
-Promise.reject(new Error('er'))
-               ^
 Error: er
 {STACK}
 

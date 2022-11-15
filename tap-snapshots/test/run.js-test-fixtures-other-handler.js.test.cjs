@@ -7,6 +7,7 @@
 'use strict'
 exports[`test/run.js test/fixtures/other-handler.js TAP > error 1`] = `
 null
+
 `
 
 exports[`test/run.js test/fixtures/other-handler.js TAP > output 1`] = `
@@ -16,5 +17,6 @@ p.uR foo
 `
 
 exports[`test/run.js test/fixtures/other-handler.js TAP > stderr 1`] = `
+
 
 `

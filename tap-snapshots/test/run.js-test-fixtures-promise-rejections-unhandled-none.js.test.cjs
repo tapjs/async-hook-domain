@@ -7,6 +7,7 @@
 'use strict'
 exports[`test/run.js test/fixtures/promise-rejections-unhandled-none.js TAP > error 1`] = `
 null
+
 `
 
 exports[`test/run.js test/fixtures/promise-rejections-unhandled-none.js TAP > output 1`] = `

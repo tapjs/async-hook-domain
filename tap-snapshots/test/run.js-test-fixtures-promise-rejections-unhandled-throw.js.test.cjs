@@ -10,6 +10,7 @@ Object {
   "code": 1,
   "signal": null,
 }
+
 `
 
 exports[`test/run.js test/fixtures/promise-rejections-unhandled-throw.js TAP > output 1`] = `
@@ -20,10 +21,6 @@ happy timeout
 exports[`test/run.js test/fixtures/promise-rejections-unhandled-throw.js TAP > stderr 1`] = `
 CAUGHT unhandledRejection happy
 CAUGHT unhandledRejection happy2
-
-{CWD}/test/fixtures/promise-rejections.js:#
-  Promise.reject(new Error('sad'))
-                 ^
 Error: sad
 {STACK}
 

@@ -7,6 +7,7 @@
 'use strict'
 exports[`test/run.js test/fixtures/child.js TAP > error 1`] = `
 null
+
 `
 
 exports[`test/run.js test/fixtures/child.js TAP > output 1`] = `
@@ -18,5 +19,6 @@ parent: throw after destroy, go to parent
 `
 
 exports[`test/run.js test/fixtures/child.js TAP > stderr 1`] = `
+
 
 `

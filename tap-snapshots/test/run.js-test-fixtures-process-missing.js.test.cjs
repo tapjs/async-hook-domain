@@ -10,17 +10,15 @@ Object {
   "code": 1,
   "signal": null,
 }
+
 `
 
 exports[`test/run.js test/fixtures/process-missing.js TAP > output 1`] = `
 
+
 `
 
 exports[`test/run.js test/fixtures/process-missing.js TAP > stderr 1`] = `
-
-{CWD}/test/fixtures/process-missing.js:#
-    throw 'thrown'
-    ^
 thrown
 
 `

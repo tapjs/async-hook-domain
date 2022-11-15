@@ -10,18 +10,15 @@ Object {
   "code": 7,
   "signal": null,
 }
+
 `
 
 exports[`test/run.js test/fixtures/throw-in-handler.js TAP > output 1`] = `
 
+
 `
 
 exports[`test/run.js test/fixtures/throw-in-handler.js TAP > stderr 1`] = `
-{CWD}/index.js:#
-      throw e
-      ^
-
-
 Error: errr
 {STACK}
 

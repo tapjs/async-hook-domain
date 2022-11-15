@@ -7,9 +7,11 @@
 'use strict'
 exports[`test/run.js test/fixtures/debug.js TAP > error 1`] = `
 null
+
 `
 
 exports[`test/run.js test/fixtures/debug.js TAP > output 1`] = `
+
 
 `
 

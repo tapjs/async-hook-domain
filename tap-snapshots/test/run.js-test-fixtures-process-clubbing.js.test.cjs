@@ -10,6 +10,7 @@ Object {
   "code": 1,
   "signal": null,
 }
+
 `
 
 exports[`test/run.js test/fixtures/process-clubbing.js TAP > output 1`] = `
@@ -18,16 +19,8 @@ caught: thrown
 `
 
 exports[`test/run.js test/fixtures/process-clubbing.js TAP > stderr 1`] = `
-
-{CWD}/test/fixtures/process-clubbing.js:#
-  throw new Error('this will not be caught')
-        ^
 Error: this will not be caught
 {STACK}
-{CWD}/test/fixtures/process-clubbing.js:#
-  throw new Error('this will not be caught')
-  ^
-
 Error: this will not be caught
 {STACK}
 

@@ -10,6 +10,7 @@ Object {
   "code": 1,
   "signal": null,
 }
+
 `
 
 exports[`test/run.js test/fixtures/promise-rejections-unhandled-warn-with-error-code.js TAP > output 1`] = `

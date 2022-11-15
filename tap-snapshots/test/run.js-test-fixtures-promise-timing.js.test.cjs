@@ -7,9 +7,11 @@
 'use strict'
 exports[`test/run.js test/fixtures/promise-timing.js TAP > error 1`] = `
 null
+
 `
 
 exports[`test/run.js test/fixtures/promise-timing.js TAP > output 1`] = `
+
 
 `
 

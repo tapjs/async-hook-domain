@@ -7,6 +7,7 @@
 'use strict'
 exports[`test/run.js test/fixtures/basic.js TAP > error 1`] = `
 null
+
 `
 
 exports[`test/run.js test/fixtures/basic.js TAP > output 1`] = `
@@ -16,5 +17,6 @@ caught: timeout throw uncaughtException
 `
 
 exports[`test/run.js test/fixtures/basic.js TAP > stderr 1`] = `
+
 
 `

@@ -7,6 +7,7 @@
 'use strict'
 exports[`test/run.js test/fixtures/destroy.js TAP > error 1`] = `
 null
+
 `
 
 exports[`test/run.js test/fixtures/destroy.js TAP > output 1`] = `
@@ -17,5 +18,6 @@ c walk up to parent
 `
 
 exports[`test/run.js test/fixtures/destroy.js TAP > stderr 1`] = `
+
 
 `
