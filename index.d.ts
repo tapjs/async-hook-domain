@@ -5,8 +5,13 @@ declare class Domain {
   public readonly ids: Set<number>
   public readonly parent?: Domain
   public destroyed: boolean
-  constructor (onerror: (er: any) => void)
-  destroy (): void
+  constructor(
+    onerror: (
+      er: any,
+      event: 'uncaughtException' | 'unhandledRejection'
+    ) => void
+  )
+  destroy(): void
 }
 
 export = Domain
