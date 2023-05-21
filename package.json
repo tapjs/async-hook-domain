@@ -15,8 +15,8 @@
     },
     ".": {
       "import": {
-        "types": "./dist/mjs/index.d.mts",
-        "default": "./dist/mjs/index.mjs"
+        "types": "./dist/mjs/index.d.ts",
+        "default": "./dist/mjs/index.js"
       },
       "require": {
         "types": "./dist/cjs/index.d.ts",
