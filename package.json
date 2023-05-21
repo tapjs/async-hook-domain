@@ -1,6 +1,6 @@
 {
   "name": "async-hook-domain",
-  "version": "3.0.2",
+  "version": "4.0.0",
   "description": "An implementation of Domain-like error handling, built on async_hooks",
   "main": "./dist/cjs/index.js",
   "types": "./dist/cjs/index.d.ts",
