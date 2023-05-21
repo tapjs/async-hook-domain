@@ -1,4 +1,4 @@
-const Domain = require('../../')
+const { Domain } = require('../..')
 const grandparent = new Domain(er => console.error('grandparent'))
 const parent = new Domain(er => { throw er })
 setTimeout(() => {

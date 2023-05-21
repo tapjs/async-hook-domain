@@ -11,6 +11,7 @@ t.cleanSnapshot = o => o
   .replace(/(\n    at [^\n]*)+/g, '\n{STACK}')
   .split(process.cwd()).join('{CWD}')
   .replace(/\.js:[0-9]+(?::[0-9]+)?/g, '.js:#')
+  .replace(/\.ts:[0-9]+(?::[0-9]+)?/g, '.ts:#')
   .replace(/[^\n]*DEP0018[^\n]*\n/g, '')
   .replace(/\(node:\d+\)/g, '(node:{PID})')
   .replace(/\n+/g, '\n')
@@ -21,7 +22,7 @@ t.cleanSnapshot = o => o
 // nyc eats it when source-map-support is enabled.  just remove.
 // tests verify that we got the right error message, that's what's
 // typically most important.
-  .replace(/\{CWD\}[\/\\][^\.]+\.js:#\s+[^\n]+\n\s*\^\n/g, '')
+  .replace(/\{CWD\}[\/\\][^\.]+\.[jt]s:#\s+[^\n]+\n\s*\^\n/g, '')
   .trim() + '\n'
 
 const runTest = file => t => {
@@ -35,8 +36,7 @@ const runTest = file => t => {
   }
 
   const args = [
-    '--require',
-    resolve(__dirname, 'sms.js'),
+    '--enable-source-maps',
     ...match[1].trim().split(' '),
     file
   ]

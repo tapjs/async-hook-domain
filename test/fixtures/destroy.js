@@ -1,4 +1,4 @@
-const Domain = require('../..')
+const { Domain } = require('../..')
 
 // shouldn't catch anything
 const d = new Domain(er => { throw er })

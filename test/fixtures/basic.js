@@ -1,4 +1,4 @@
-const Domain = require('../..')
+const { Domain } = require('../..')
 
 const d = new Domain((e, type) => console.log('caught:', e, type))
 setTimeout(() => {

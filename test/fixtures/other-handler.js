@@ -1,4 +1,4 @@
-const Domain = require('../..')
+const { Domain } = require('../..')
 
 process.on('uncaughtException', er =>
   console.log('p.uE', er))

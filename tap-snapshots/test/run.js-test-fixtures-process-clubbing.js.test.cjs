@@ -21,7 +21,5 @@ caught: thrown
 exports[`test/run.js test/fixtures/process-clubbing.js TAP > stderr 1`] = `
 Error: this will not be caught
 {STACK}
-Error: this will not be caught
-{STACK}
 
 `

@@ -1,6 +1,6 @@
 process = null
 
-const Domain = require('../..')
+const { Domain } = require('../..')
 
 setTimeout(() => {
   const d = new Domain(er => console.log('caught:', er))

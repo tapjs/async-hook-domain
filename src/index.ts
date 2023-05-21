@@ -1,28 +1,41 @@
-const { executionAsyncId, createHook } = require('async_hooks')
+import {
+  AsyncHook,
+  createHook,
+  executionAsyncId,
+  HookCallbacks,
+} from 'async_hooks'
 
 // grab a reference to this right away, in case the user changes it
 // weird thing to do, but this is used in tests a lot, where weird
-// things are quite common.
+// things are quite common. Set a dummy process if we don't have it.
 const proc =
   typeof process === 'object' && process
     ? process
-    : /* istanbul ignore next */ {
+    : ({
         _handler: null,
         env: {},
         execArgv: [],
-        hasUncaughtExceptionCaptureCallback: /* istanbul ignore next */ () =>
-          !!proc._handler,
-        setUncaughtExceptionCaptureCallback: /* istanbul ignore next */ fn =>
-          (proc._handler = fn),
-        once: /* istanbul ignore next */ (_ev, _fn) => proc,
-        on: /* istanbul ignore next */ (_ev, _fn) => proc,
-        removeListener: /* istanbul ignore next */ _fn => proc,
-      }
+        /* c8 ignore start */
+        hasUncaughtExceptionCaptureCallback: () => {
+          const p = proc as NodeJS.Process & { _handler: any }
+          return !!p._handler
+        },
+        setUncaughtExceptionCaptureCallback: (fn: Function) => {
+          const p = proc as NodeJS.Process & { _handler: any }
+          p._handler = fn
+        },
+        /* c8 ignore end */
+        listeners: () => ({}),
+        emit: () => false,
+        once: () => proc,
+        on: () => proc,
+        removeListener: () => proc,
+      } as unknown as NodeJS.Process)
 
+import { writeSync } from 'fs'
+import { format } from 'util'
 const debugAlways = (() => {
-  const { writeSync } = require('fs')
-  const { format } = require('util')
-  return (...args) => writeSync(2, format(...args) + '\n')
+  return (...args: any[]) => writeSync(2, format(...args) + '\n')
 })()
 const debug = proc.env.ASYNC_HOOK_DOMAIN_DEBUG !== '1' ? () => {} : debugAlways
 
@@ -52,7 +65,7 @@ const unhandledRejectionMode = (() => {
 })()
 
 // the async hook activation and deactivation
-let domainHook = null
+let domainHook: AsyncHook | null = null
 const activateDomains = () => {
   if (!domainHook) {
     debug('ACTIVATE')
@@ -60,7 +73,7 @@ const activateDomains = () => {
     domainHook.enable()
     proc.on('uncaughtExceptionMonitor', domainErrorHandler)
     if (unhandledRejectionMode !== 'strict') {
-      proc.emit = domainProcessEmit
+      proc.emit = domainProcessEmit as NodeJS.Process['emit']
     }
   }
 }
@@ -78,18 +91,23 @@ const deactivateDomains = () => {
 // marking the event as 'handled' unless we handled it.
 // Do nothing if there's a user handler for the event, though.
 const originalProcessEmit = proc.emit
-const domainProcessEmit = (ev, ...args) => {
+const domainProcessEmit = (ev: string | symbol, ...args: any[]) => {
   if (
     ev !== 'unhandledRejection' ||
     proc.listeners('unhandledRejection').length
   ) {
+    //@ts-ignore
     return originalProcessEmit.call(proc, ev, ...args)
   }
   const er = args[0]
   return domainErrorHandler(er, 'unhandledRejection', true)
 }
 
-const domainErrorHandler = (er, ev, rejectionHandler = false) => {
+const domainErrorHandler = (
+  er: unknown,
+  ev?: string,
+  rejectionHandler: boolean = false
+) => {
   debug('AHD MAYBE HANDLE?', ev, er)
   // if anything else attached a handler, then it's their problem,
   // not ours.  get out of the way.
@@ -135,7 +153,7 @@ const domainErrorHandler = (er, ev, rejectionHandler = false) => {
 }
 
 // the hook callbacks
-const hookMethods = {
+const hookMethods: HookCallbacks = {
   init(id, type, triggerId) {
     debug('INIT', id, type, triggerId)
     const current = domains.get(triggerId)
@@ -164,8 +182,23 @@ const hookMethods = {
 const currentDomain = () => domains.get(executionAsyncId())
 
 let id = 1
-class Domain {
-  constructor(onerror) {
+export class Domain {
+  eid: number
+  id: number
+  ids: Set<number>
+  onerror: (
+    er: unknown,
+    event: 'uncaughtException' | 'unhandledRejection'
+  ) => any
+  parent?: Domain
+  destroyed: boolean
+
+  constructor(
+    onerror: (
+      er: unknown,
+      event: 'uncaughtException' | 'unhandledRejection'
+    ) => any
+  ) {
     if (typeof onerror !== 'function') {
       // point at where the wrong thing was actually done
       const er = new TypeError('onerror must be a function')
@@ -212,5 +245,3 @@ class Domain {
     }
   }
 }
-
-module.exports = Domain

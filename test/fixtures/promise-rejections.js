@@ -1,4 +1,4 @@
-const Domain = require('../..')
+const { Domain } = require('../..')
 setImmediate(() => {
   const d = new Domain((er, where) => {
     console.error('CAUGHT', where, er.message)

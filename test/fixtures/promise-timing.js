@@ -1,4 +1,4 @@
-const Domain = require('../..')
+const { Domain } = require('../..')
 const d1 = new Domain(er => { console.error('domain 1', er) }, 1)
 console.error('call new Promise')
 new Promise((_, rej) => {

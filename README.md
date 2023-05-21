@@ -7,7 +7,9 @@ deprecated `domain` node core module, re-implemented on top of
 ## USAGE
 
 ```js
-const Domain = require('async-hook-domain')
+// hybrid module, either works
+import { Domain } from 'async-hook-domain'
+// or: const { Domain } = require('async-hook-domain')
 
 // instantiating a Domain attaches it to the current async execution
 // context, and all child contexts that come off of it.  You don't have
@@ -92,7 +94,7 @@ when the Promise constructor was initiated.
 For example:
 
 ```js
-const Domain = require('async-hook-domain')
+import { Domain } from 'async-hook-domain'
 
 const d1 = new Domain(() => console.log('handled by d1'))
 new Promise((_, reject) => { // <-- Promise bound to d1 domain
@@ -128,7 +130,7 @@ of the Promise constructor, and will stack up for that context.
 For example:
 
 ```js
-const Domain = require('async-hook-domain')
+import { Domain } from 'async-hook-domain'
 
 // executionAsyncId=1, domain added
 const d1 = new Domain(() => console.log('handled by d1'))
@@ -156,7 +158,7 @@ treated as a call to `reject()`, this also applies to thrown
 errors within the construction method:
 
 ```js
-const Domain = require('async-hook-domain')
+import { Domain } from 'async-hook-domain'
 const d1 = new Domain(() => console.error('handled by d1'))
 new Promise((_, reject) => {
   const d2 = new Domain(() => console.error('handled by d2'))

@@ -1,5 +1,5 @@
 #!/usr/bin/env node --unhandled-rejections=warn
-const Domain = require('../..')
+const { Domain } = require('../..')
 
 Promise.reject('no one to catch this')
 

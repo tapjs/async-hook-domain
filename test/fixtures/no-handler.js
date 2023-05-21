@@ -1,2 +1,2 @@
-const Domain = require('../..')
+const { Domain } = require('../..')
 new Domain()
