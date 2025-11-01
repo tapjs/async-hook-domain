@@ -5,18 +5,18 @@
  * Make sure to inspect the output below.  Do not ignore changes!
  */
 'use strict'
-exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/promise-rejections-unhandled-warn.js > TAP > error 1`] = `
+exports[`test/run.cjs test/fixtures/promise-rejections-unhandled-warn.js > TAP > error 1`] = `
 null
 
 `
 
-exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/promise-rejections-unhandled-warn.js > TAP > output 1`] = `
+exports[`test/run.cjs test/fixtures/promise-rejections-unhandled-warn.js > TAP > output 1`] = `
 happy timeout
 sad timeout
 
 `
 
-exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/promise-rejections-unhandled-warn.js > TAP > stderr 1`] = `
+exports[`test/run.cjs test/fixtures/promise-rejections-unhandled-warn.js > TAP > stderr 1`] = `
 CAUGHT unhandledRejection happy
 (node:{PID}) UnhandledPromiseRejectionWarning: Error: happy
 {STACK}

@@ -5,7 +5,7 @@
  * Make sure to inspect the output below.  Do not ignore changes!
  */
 'use strict'
-exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/promise-throwing-handler.js > TAP > error 1`] = `
+exports[`test/run.cjs test/fixtures/promise-throwing-handler.js > TAP > error 1`] = `
 Object {
   "code": 1,
   "signal": null,
@@ -13,12 +13,12 @@ Object {
 
 `
 
-exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/promise-throwing-handler.js > TAP > output 1`] = `
+exports[`test/run.cjs test/fixtures/promise-throwing-handler.js > TAP > output 1`] = `
 
 
 `
 
-exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/promise-throwing-handler.js > TAP > stderr 1`] = `
+exports[`test/run.cjs test/fixtures/promise-throwing-handler.js > TAP > stderr 1`] = `
 Error: er
 {STACK}
 [90m    at Module._compile (node:internal/modules/cjs/loader:1692:14)[39m

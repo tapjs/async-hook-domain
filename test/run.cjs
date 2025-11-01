@@ -26,7 +26,6 @@ t.cleanSnapshot = o => o
   .trim() + '\n'
 
 const runTest = file => t => {
-  t.snapshotFile = resolve(__dirname, `../tap-snapshots/test/fixtures/${basename(file)}.test.cjs`)
   const firstLine = fs.readFileSync(file, 'utf8').split(/\n/)[0]
   // default all node versions to old default for consistency
   const match = firstLine && firstLine.match(/^#!\/usr\/bin\/env node (.*)$/)

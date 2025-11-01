@@ -5,18 +5,18 @@
  * Make sure to inspect the output below.  Do not ignore changes!
  */
 'use strict'
-exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/basic.js > TAP > error 1`] = `
+exports[`test/run.cjs test/fixtures/basic.js > TAP > error 1`] = `
 null
 
 `
 
-exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/basic.js > TAP > output 1`] = `
+exports[`test/run.cjs test/fixtures/basic.js > TAP > output 1`] = `
 caught: catch this unhandledRejection
 caught: timeout throw uncaughtException
 
 `
 
-exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/basic.js > TAP > stderr 1`] = `
+exports[`test/run.cjs test/fixtures/basic.js > TAP > stderr 1`] = `
 
 
 `

@@ -5,7 +5,7 @@
  * Make sure to inspect the output below.  Do not ignore changes!
  */
 'use strict'
-exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/promise-rejections-unhandled-throw.js > TAP > error 1`] = `
+exports[`test/run.cjs test/fixtures/promise-rejections-unhandled-strict.js > TAP > error 1`] = `
 Object {
   "code": 1,
   "signal": null,
@@ -13,12 +13,12 @@ Object {
 
 `
 
-exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/promise-rejections-unhandled-throw.js > TAP > output 1`] = `
+exports[`test/run.cjs test/fixtures/promise-rejections-unhandled-strict.js > TAP > output 1`] = `
 happy timeout
 
 `
 
-exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/promise-rejections-unhandled-throw.js > TAP > stderr 1`] = `
+exports[`test/run.cjs test/fixtures/promise-rejections-unhandled-strict.js > TAP > stderr 1`] = `
 CAUGHT unhandledRejection happy
 CAUGHT unhandledRejection happy2
 Error: sad
