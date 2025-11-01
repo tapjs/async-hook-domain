@@ -5,18 +5,18 @@
  * Make sure to inspect the output below.  Do not ignore changes!
  */
 'use strict'
-exports[`test/run.js test/fixtures/promise-no-domain.js TAP > error 1`] = `
+exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/promise-no-domain.js > TAP > error 1`] = `
 null
 
 `
 
-exports[`test/run.js test/fixtures/promise-no-domain.js TAP > output 1`] = `
+exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/promise-no-domain.js > TAP > output 1`] = `
 d caught 1
 d caught 2
 
 `
 
-exports[`test/run.js test/fixtures/promise-no-domain.js TAP > stderr 1`] = `
+exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/promise-no-domain.js > TAP > stderr 1`] = `
 (node:{PID}) UnhandledPromiseRejectionWarning: no one to catch this
 (node:{PID}) UnhandledPromiseRejectionWarning: ... (rejection id: 1)
 (node:{PID}) UnhandledPromiseRejectionWarning: caught 1

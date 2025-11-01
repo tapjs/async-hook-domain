@@ -5,12 +5,12 @@
  * Make sure to inspect the output below.  Do not ignore changes!
  */
 'use strict'
-exports[`test/run.js test/fixtures/child.js TAP > error 1`] = `
+exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/child.js > TAP > error 1`] = `
 null
 
 `
 
-exports[`test/run.js test/fixtures/child.js TAP > output 1`] = `
+exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/child.js > TAP > output 1`] = `
 parent: throw in main context
 child: sync throw in child context
 child: setImmediate throw
@@ -18,7 +18,7 @@ parent: throw after destroy, go to parent
 
 `
 
-exports[`test/run.js test/fixtures/child.js TAP > stderr 1`] = `
+exports[`test/run.cjs /Users/isaacs/Developer/tapjs/async-hook-domain/test/fixtures/child.js > TAP > stderr 1`] = `
 
 
 `

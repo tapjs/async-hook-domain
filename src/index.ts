@@ -54,11 +54,11 @@ const domains = new Map()
 const unhandledRejectionMode = (() => {
   let mode = 'throw'
   for (let i = 0; i < proc.execArgv.length; i++) {
-    const m = process.execArgv[i]
+    const m = String(process.execArgv[i])
     if (m.startsWith('--unhandled-rejections=')) {
       mode = m.substring('--unhandled-rejections='.length)
     } else if (m === '--unhandled-rejections') {
-      mode = proc.execArgv[i + 1]
+      mode = String(proc.execArgv[i + 1])
     }
   }
   return mode
