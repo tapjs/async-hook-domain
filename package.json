@@ -30,7 +30,7 @@
     "presnap": "npm run prepare",
     "test": "tap test/fixtures/*.*",
     "snap": "tap test/fixtures/*.*",
-    "format": "prettier --write . --loglevel warn",
+    "format": "prettier --write . --log-level warn",
     "typedoc": "typedoc --tsconfig .tshy/esm.json"
   },
   "devDependencies": {
