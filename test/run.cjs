@@ -5,7 +5,7 @@ const file = process.argv[2]
 
 const node = process.execPath
 const {execFile} = require('child_process')
-const {relative, basename} = require('path')
+const {relative, basename, resolve} = require('path')
 
 t.cleanSnapshot = o => o
   .replace(/(\n    at [^\n]*)+/g, '\n{STACK}')
@@ -26,7 +26,7 @@ t.cleanSnapshot = o => o
   .trim() + '\n'
 
 const runTest = file => t => {
-  t.snapshotFile = `tap-snapshots/test/fixtures/${basename(file)}.test.cjs`
+  t.snapshotFile = resolve(__dirname, `../tap-snapshots/test/fixtures/${basename(file)}.test.cjs`)
   const firstLine = fs.readFileSync(file, 'utf8').split(/\n/)[0]
   // default all node versions to old default for consistency
   const match = firstLine && firstLine.match(/^#!\/usr\/bin\/env node (.*)$/)
