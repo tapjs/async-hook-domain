@@ -52,17 +52,6 @@
       "test/run.cjs"
     ]
   },
-  "prettier": {
-    "semi": false,
-    "printWidth": 80,
-    "tabWidth": 2,
-    "useTabs": false,
-    "singleQuote": true,
-    "jsxSingleQuote": false,
-    "bracketSameLine": true,
-    "arrowParens": "avoid",
-    "endOfLine": "lf"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/tapjs/async-hook-domain.git"
